@@ -1,0 +1,61 @@
+---
+- name: Run BIND9 Container
+  hosts: all
+  become: true
+
+  tasks:
+    # Install Docker module
+    #- name: Install Docker Python module
+    #  pip:
+    #    name: docker
+
+    # Pull BIND9 image
+    #- name: Pull BIND9 Docker image
+    #  docker_image:
+    #    name: ubuntu/bind9
+    #    state: present
+    #    tag: bind9:9.18-22.04_beta
+
+    # Create named.conf.local file
+    - name: Create named.conf.local template
+      template:
+        src: templates/named.conf.local.j2
+        dest: /var/bind/named.conf.local
+      notify: Restart BIND9 container
+      
+    # Create named.conf.options file
+    - name: Create named.conf.local template
+      template:
+        src: templates/named.conf.options.j2
+        dest: /var/bind/named.conf.options
+      notify: Restart BIND9 container      
+
+    # Create zone files
+    - name: Create forward zone file
+      template:
+        src: templates/db.fwd.profiler.bootcamp.lan.j2
+        dest: /var/bind/db.fwd.profiler.bootcamp.lan
+      notify: Restart BIND9 container
+    - name: Create reverse zone file
+      template:
+       src: templates/db.rev.profiler.bootcamp.lan.j2
+       dest: /var/bind/db.rev.profiler.bootcamp.lan
+      notify: Restart BIND9 container
+
+    # Run BIND9 container
+    - name: Run BIND9 Docker container
+      docker_container:
+        name: bind
+        image: ubuntu/bind9:9.18-22.04_beta
+        #ports:
+        # - "53:53/tcp"
+        # - "53:53/udp"
+        volumes:
+          - /var/bind:/var/bind/
+        restart: yes      
+
+  handlers:
+    - name: Restart BIND9 container
+      docker_container:
+        name: bind
+        state: restarted

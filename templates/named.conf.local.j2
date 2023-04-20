@@ -1,0 +1,22 @@
+//
+// Do any local configuration here
+//
+
+ // зона прямого просмотра
+zone "profiler.bootcamp.lan" {
+  type master;
+  file "/var/bind/db.fwd.profiler.bootcamp.lan";
+  // allow-transfer { 192.168.254.131; }; # server0 private IP address
+  };
+
+// зона обратного просмотра
+zone "254.168.192.in-addr.arpa" {
+  type master;
+  file "/var/bind/db.rev.profiler.bootcamp.lan";
+  // allow-transfer { 192.168.254.131; };  # server0 private IP address
+  };
+
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";

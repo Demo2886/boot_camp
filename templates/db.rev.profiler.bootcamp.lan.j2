@@ -1,0 +1,16 @@
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     profiler.bootcamp.lan. root.profiler.bootcamp.lan. (
+                        5
+                        604800
+                        86400
+                        2419200
+                        604800 )
+
+; name servers
+      IN      NS      profiler.bootcamp.lan.
+
+
+128      IN      PTR    profiler.bootcamp.lan.
